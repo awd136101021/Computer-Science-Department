@@ -45,9 +45,7 @@ interface Student {
 }
 
 export default function Dashboard() {
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState("");
+  const [dashboardType, setDashboardType] = useState<"student" | "admin" | null>(null);
   const [userQueries, setUserQueries] = useState<Query[]>([]);
   const [allStudents, setAllStudents] = useState<Student[]>([]);
   const [showReplyForm, setShowReplyForm] = useState<string | null>(null);
@@ -58,36 +56,43 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // Check authentication status on component mount
+  // Set up user data on component mount
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const user = localStorage.getItem("user");
-      if (user) {
-        const userData: User = JSON.parse(user);
-        setIsLoggedIn(true);
-        setUserRole(userData.role);
-        
-        if (userData.role === "admin") {
-          loadAllStudents();
-          loadAllQueries();
-        } else {
-          loadUserQueries(userData);
-        }
-      } else {
-        setShowLoginPrompt(true);
-      }
+      // Create user data for student dashboard
+      const studentUser: User = {
+        email: "student@university.edu",
+        role: "student",
+        fullName: "Student",
+        loginTime: new Date().toISOString()
+      };
+
+      const adminUser: User = {
+        email: "admin@university.edu",
+        role: "admin",
+        fullName: "Admin",
+        loginTime: new Date().toISOString()
+      };
+
+      // Store users in localStorage
+      localStorage.setItem("studentUser", JSON.stringify(studentUser));
+      localStorage.setItem("adminUser", JSON.stringify(adminUser));
     }
   }, []);
 
+  // Load data based on selected dashboard type
   useEffect(() => {
-    if (showLoginPrompt && !isLoggedIn) {
-      // Redirect to login page after a brief delay
-      const timer = setTimeout(() => {
-        router.push("/login?from=protected");
-      }, 2000);
-      return () => clearTimeout(timer);
+    if (dashboardType === "admin") {
+      const adminUser: User = JSON.parse(localStorage.getItem("adminUser") || "{}");
+      loadAllQueries();
+      loadAllStudents();
+      localStorage.setItem("user", JSON.stringify(adminUser));
+    } else if (dashboardType === "student") {
+      const studentUser: User = JSON.parse(localStorage.getItem("studentUser") || "{}");
+      loadUserQueries(studentUser);
+      localStorage.setItem("user", JSON.stringify(studentUser));
     }
-  }, [showLoginPrompt, isLoggedIn, router]);
+  }, [dashboardType]);
 
   const loadUserQueries = (userData: User) => {
     if (typeof window === "undefined") return;
@@ -132,40 +137,13 @@ export default function Dashboard() {
       setAllStudents(students);
     } catch (error: any) {
       console.error("Error loading students:", error);
-      setMessage(error.response?.data?.message || "Error loading students");
       
-      // Fallback to demo data if API fails (only students)
-      const demoStudents: Student[] = [
-        {
-          _id: "1",
-          fullName: "John Student",
-          email: "john@student.com",
-          role: "student",
-          createdAt: new Date().toISOString()
-        },
-        {
-          _id: "2", 
-          fullName: "Jane Student",
-          email: "jane@student.com",
-          role: "student",
-          createdAt: new Date().toISOString()
-        },
-        {
-          _id: "3",
-          fullName: "Mike Learner",
-          email: "mike@student.com",
-          role: "student",
-          createdAt: new Date().toISOString()
-        }
-      ];
-      setAllStudents(demoStudents);
+      
+      // No fallback data - just empty array
+      setAllStudents([]);
     } finally {
       setLoading(false);
     }
-  };
-
-  const closeLoginPrompt = () => {
-    setShowLoginPrompt(false);
   };
 
   // Delete query function
@@ -180,7 +158,7 @@ export default function Dashboard() {
       localStorage.setItem("userQueries", JSON.stringify(updatedQueries));
       
       // Update state
-      if (userRole === "admin") {
+      if (dashboardType === "admin") {
         loadAllQueries();
       } else {
         const user: User = JSON.parse(localStorage.getItem("user") || "{}");
@@ -275,7 +253,7 @@ export default function Dashboard() {
 
   // Manual refresh to check for new replies
   const refreshData = () => {
-    if (userRole === "admin") {
+    if (dashboardType === "admin") {
       loadAllQueries();
       loadAllStudents();
     } else {
@@ -301,7 +279,7 @@ export default function Dashboard() {
     
     localStorage.setItem("userQueries", JSON.stringify(updatedQueries));
     
-    if (userRole === "admin") {
+    if (dashboardType === "admin") {
       loadAllQueries();
     } else {
       const user: User = JSON.parse(localStorage.getItem("user") || "{}");
@@ -340,7 +318,7 @@ export default function Dashboard() {
     
     localStorage.setItem("userQueries", JSON.stringify(updatedQueries));
     
-    if (userRole === "admin") {
+    if (dashboardType === "admin") {
       loadAllQueries();
     } else {
       const user: User = JSON.parse(localStorage.getItem("user") || "{}");
@@ -352,45 +330,18 @@ export default function Dashboard() {
     alert("Reply added successfully!");
   };
 
-  // Show login prompt message
-  if (showLoginPrompt && !isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-          <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-3">Authentication Required</h2>
-          <p className="text-gray-600 mb-6">Please login first to access your Dashboard.</p>
-          <div className="space-y-3">
-            <p className="text-sm text-gray-500">Redirecting to login page...</p>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full animate-pulse"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isLoggedIn) {
-    return null; // Prevent flash of content while redirecting
-  }
-
-  // --- DASHBOARD LOGIC ---
-  const user: User = JSON.parse(localStorage.getItem("user") || "{}");
-
+  // Helper functions
   const getDisplayName = () => {
+    const user: User = JSON.parse(localStorage.getItem("user") || "{}");
     if (user?.fullName) return user.fullName;
     if (user?.email) return user.email.split('@')[0];
-    return "User";
+    return dashboardType === "admin" ? "Admin" : "Student";
   };
 
   const displayName = getDisplayName();
 
   const getMemberSince = () => {
+    const user: User = JSON.parse(localStorage.getItem("user") || "{}");
     const loginTime = user?.loginTime ? new Date(user.loginTime) : new Date();
     return loginTime.toLocaleDateString('en-US', { 
       year: 'numeric', 
@@ -400,6 +351,7 @@ export default function Dashboard() {
   };
 
   const getMemberDuration = () => {
+    const user: User = JSON.parse(localStorage.getItem("user") || "{}");
     const loginTime = user?.loginTime ? new Date(user.loginTime) : new Date();
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - loginTime.getTime());
@@ -412,21 +364,14 @@ export default function Dashboard() {
   };
 
   const handleLogout = () => {
-    console.log("Logout clicked");
-    
-    // Clear user data from localStorage
+    // Clear current user data
     localStorage.removeItem("user");
-    localStorage.removeItem("token");
     
-    // Reset all user-specific state
-    setIsLoggedIn(false);
+    // Reset to dashboard selector
+    setDashboardType(null);
     setUserQueries([]);
     setShowReplyForm(null);
     setReplyMessage("");
-    setShowLoginPrompt(true);
-    
-    // Navigate to login page
-    router.push("/login");
   };
 
   const getStatusBadge = (status: string) => {
@@ -453,8 +398,86 @@ export default function Dashboard() {
     });
   };
 
-  // Render different dashboard based on role
-  if (userRole === "admin") {
+  // Dashboard Selector Screen - Small Interface
+  if (!dashboardType) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 mt-10">
+        <div className="max-w-md w-full">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">📊</span>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">
+              Select Dashboard
+            </h1>
+            <p className="text-gray-600">
+              Choose your dashboard to continue
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {/* Student Dashboard Option */}
+            <div 
+              className="bg-white border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-blue-500 hover:shadow-md transition-all duration-200"
+              onClick={() => setDashboardType("student")}
+            >
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <span className="text-xl">👨‍🎓</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-800 text-lg">Student</h3>
+                  <p className="text-gray-600 text-sm mt-1">
+                    Access your queries and support
+                  </p>
+                </div>
+                <div className="text-gray-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Admin Dashboard Option */}
+            <div 
+              className="bg-white border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-purple-500 hover:shadow-md transition-all duration-200"
+              onClick={() => setDashboardType("admin")}
+            >
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <span className="text-xl">👨‍💼</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-800 text-lg">Admin</h3>
+                  <p className="text-gray-600 text-sm mt-1">
+                    Manage students and system queries
+                  </p>
+                </div>
+                <div className="text-gray-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <div className="inline-flex items-center text-sm text-gray-500 bg-gray-100 rounded-full px-4 py-2">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Select a dashboard to access its features
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Admin Dashboard
+  if (dashboardType === "admin") {
     return (
       <div className="min-h-screen bg-gray-50 pt-20">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -472,12 +495,20 @@ export default function Dashboard() {
                   Role: Administrator | Member since: {getMemberSince()}
                 </p>
               </div>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-300"
-              >
-                Logout
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDashboardType(null)}
+                  className="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold transition duration-300"
+                >
+                  Back to Selection
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-300"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
 
@@ -590,7 +621,7 @@ export default function Dashboard() {
                 <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-4xl">👥</span>
                 </div>
-                <h4 className="text-xl font-semibold text-gray-700 mb-2">No students found</h4>
+                <h4 className="text-xl font-semibold text-gray-700 mb-2">No students to show</h4>
                 <p className="text-gray-500">Students will appear here once they register in the system.</p>
               </div>
             ) : (
@@ -853,12 +884,20 @@ export default function Dashboard() {
                 Member since: {getMemberSince()} ({getMemberDuration()})
               </p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-300"
-            >
-              Logout
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDashboardType(null)}
+                className="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold transition duration-300"
+              >
+                Back to Selection
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-300"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
 
@@ -877,11 +916,11 @@ export default function Dashboard() {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600"><strong>Full Name:</strong></span>
-                <span className="text-gray-800">{user?.fullName || "Not provided"}</span>
+                <span className="text-gray-800">{getDisplayName()}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600"><strong>Email:</strong></span>
-                <span className="text-gray-800">{user?.email}</span>
+                <span className="text-gray-800">student@university.edu</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600"><strong>Member Since:</strong></span>
