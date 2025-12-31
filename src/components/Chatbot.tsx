@@ -68,12 +68,6 @@ const StopCircleIcon = () => (
     </svg>
 );
 
-const LockIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-    </svg>
-);
-
 const TypingIndicator = () => (
     <div className="flex items-center space-x-1 p-2 bg-white rounded-xl rounded-bl-none text-gray-800 border border-gray-100 shadow-md">
         <span className="text-sm">Typing...</span>
@@ -102,35 +96,7 @@ export default function Chatbot() {
     const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
     const [isSpeechSynthesisAvailable, setIsSpeechSynthesisAvailable] = useState(false);
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const router = useRouter();
-
-    useEffect(() => {
-        const checkAuthStatus = () => {
-            if (typeof window !== 'undefined') {
-                const user = localStorage.getItem("user");
-                setIsLoggedIn(!!user);
-
-                if (!user && isOpen) {
-                    setIsOpen(false);
-                }
-            }
-        };
-
-        checkAuthStatus();
-
-        const handleStorageChange = () => {
-            checkAuthStatus();
-        };
-
-        window.addEventListener('storage', handleStorageChange);
-        const interval = setInterval(checkAuthStatus, 1000);
-
-        return () => {
-            window.removeEventListener('storage', handleStorageChange);
-            clearInterval(interval);
-        };
-    }, [isOpen]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -202,16 +168,10 @@ export default function Chatbot() {
     }, [inputValue]);
 
     const toggleChat = () => {
-        if (!isLoggedIn) {
-            router.push('/login');
-            return;
-        }
         setIsOpen(!isOpen);
     };
 
     const handleRefreshChat = () => {
-        if (!isLoggedIn) return;
-
         if (isRecording) recognitionRef.current?.stop();
         if (isSpeechSynthesisAvailable && typeof window !== 'undefined') window.speechSynthesis.cancel();
         setSpeakingIndex(null);
@@ -226,8 +186,6 @@ export default function Chatbot() {
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!isLoggedIn) return;
-
         const textToSend = inputValue;
         if (!textToSend.trim() || isLoading || isRecording || inputValue === "Listening...") return;
 
@@ -255,8 +213,6 @@ export default function Chatbot() {
     };
 
     const handleVoiceClick = () => {
-        if (!isLoggedIn) return;
-
         if (isRecording) {
             recognitionRef.current?.stop();
         } else {
@@ -272,7 +228,7 @@ export default function Chatbot() {
     };
 
     const handleSpeak = (text: string, index: number) => {
-        if (!isLoggedIn || !isSpeechSynthesisAvailable || isLoading || typeof window === 'undefined') return;
+        if (!isSpeechSynthesisAvailable || isLoading || typeof window === 'undefined') return;
         const synth = window.speechSynthesis;
 
         if (synth.speaking && speakingIndex === index) {
@@ -300,7 +256,7 @@ export default function Chatbot() {
 
     return (
         <div className="fixed bottom-5 right-5 z-50">
-            {isLoggedIn && isOpen && (
+            {isOpen && (
                 <div className={`transition-all duration-500 ease-in-out opacity-100 translate-y-0 origin-bottom-right absolute bottom-20 right-0 w-80 md:w-96 bg-white rounded-xl shadow-2xl flex flex-col h-[65vh] border border-gray-100`}>
 
                     {/* Header */}
@@ -452,30 +408,20 @@ export default function Chatbot() {
             <button
                 onClick={toggleChat}
                 aria-label={isOpen ? "Close Chatbot" : "Open Chatbot"}
-                className={`w-14 h-14 rounded-full shadow-xl transform transition-transform duration-300 ease-in-out focus:outline-none focus:ring-4 flex items-center justify-center border-2 ${!isLoggedIn ? 'bg-gray-100 border-gray-300' : 'bg-white'
-                    }`}
+                className={`w-14 h-14 rounded-full shadow-xl transform transition-transform duration-300 ease-in-out focus:outline-none focus:ring-4 flex items-center justify-center border-2 bg-white`}
                 style={{
-                    borderColor: isLoggedIn ? PRIMARY_COLOR_HEX : '#d1d5db',
-                    color: isLoggedIn ? PRIMARY_COLOR_HEX : '#9ca3af',
-                    boxShadow: isLoggedIn ? `0 4px 10px ${PRIMARY_COLOR_RING}` : '0 4px 10px rgba(0,0,0,0.1)',
-                    '--tw-ring-color': isLoggedIn ? PRIMARY_COLOR_RING : '#9ca3af',
+                    borderColor: PRIMARY_COLOR_HEX,
+                    color: PRIMARY_COLOR_HEX,
+                    boxShadow: `0 4px 10px ${PRIMARY_COLOR_RING}`,
+                    '--tw-ring-color': PRIMARY_COLOR_RING,
                 } as React.CSSProperties}
             >
                 {isOpen ? (
                     <CloseIcon />
-                ) : !isLoggedIn ? (
-                    <LockIcon />
                 ) : (
                     <MessageIcon />
                 )}
             </button>
-
-            {!isLoggedIn && (
-                <div className="absolute bottom-20 right-0 bg-gray-800 text-white text-xs rounded-lg py-2 px-3 whitespace-nowrap opacity-90">
-                    Login to use chatbot
-                    <div className="absolute top-full right-6 border-4 border-transparent border-t-gray-800"></div>
-                </div>
-            )}
         </div>
     );
 }
