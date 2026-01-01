@@ -111,20 +111,24 @@ const Login = () => {
 
     return (
         <div
-            className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat relative p-4"
+            className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat relative p-3 sm:p-4"
             style={{ backgroundImage: "url('/images/lab1.jpg')", backgroundAttachment: "fixed" }}
         >
             <div className="absolute inset-0 bg-black/60 z-0"></div>
 
-            <div className="relative z-10 w-full max-w-sm">
-                <div className="text-center mb-4 mt-16">
-                    <h1 className="text-2xl font-bold text-white mb-1">Computer Science Portal</h1>
+            {/* Responsive container width and margin */}
+            <div className="relative z-10 w-full max-w-xs sm:max-w-sm mx-auto">
+                <div className="text-center mb-3 sm:mb-4 mt-12 sm:mt-16">
+                    {/* Responsive font sizes */}
+                    <h1 className="text-xl sm:text-2xl font-bold text-white mb-1">Computer Science Portal</h1>
                     <p className="text-white/80 text-xs">Academic Support System</p>
                 </div>
 
-                <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl p-6 w-full border border-white/20">
-                    <div className="text-center mb-4">
-                        <h2 className="text-xl font-bold text-white mb-1">
+                {/* Responsive card padding */}
+                <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl p-4 sm:p-6 w-full border border-white/20">
+                    <div className="text-center mb-3 sm:mb-4">
+                        {/* Responsive font sizes */}
+                        <h2 className="text-lg sm:text-xl font-bold text-white mb-1">
                             {isLogin ? "Welcome Back" : "Create Account"}
                         </h2>
                         <p className="text-white/70 text-xs">
@@ -132,7 +136,7 @@ const Login = () => {
                         </p>
                     </div>
 
-                    <form className="space-y-4" onSubmit={handleSubmit}>
+                    <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
                         {!isLogin && (
                             <div>
                                 <input
@@ -142,7 +146,7 @@ const Login = () => {
                                     value={formData.fullName}
                                     onChange={handleChange}
                                     required={!isLogin}
-                                    className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300 text-sm"
+                                    className="w-full p-2.5 sm:p-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300 text-sm"
                                 />
                             </div>
                         )}
@@ -155,7 +159,7 @@ const Login = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300 text-sm"
+                                className="w-full p-2.5 sm:p-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300 text-sm"
                             />
                         </div>
 
@@ -167,7 +171,7 @@ const Login = () => {
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent pr-10 transition duration-300 text-sm"
+                                className="w-full p-2.5 sm:p-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent pr-10 transition duration-300 text-sm"
                             />
 
                             <button
@@ -177,12 +181,12 @@ const Login = () => {
                                 aria-label={isPasswordVisible ? "Hide password" : "Show password"}
                             >
                                 {isPasswordVisible ? (
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.057 10.057 0 0112 19c-4.418 0-8.232-2.352-10-6C2.768 8.352 6.582 6 11 6c1.233 0 2.414.305 3.5.856M4 4l16 16"></path>
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z"></path>
                                     </svg>
                                 ) : (
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
@@ -191,9 +195,10 @@ const Login = () => {
                         </div>
 
                         {!isLogin && (
-                            <div className="text-xs text-white/70 bg-white/5 p-3 rounded-lg border border-white/10">
+                            <div className="text-xs text-white/70 bg-white/5 p-2.5 sm:p-3 rounded-lg border border-white/10">
                                 <p className="font-semibold mb-1 text-white">Password Requirements:</p>
-                                <div className="grid grid-cols-2 gap-1">
+                                {/* Responsive grid layout */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
                                     <div className={`flex items-center ${formData.password.length >= 8 ? "text-green-300" : ""}`}>
                                         <span className="mr-1 text-xs">{formData.password.length >= 8 ? "✓" : "•"}</span>
                                         Min 8 chars
@@ -218,7 +223,8 @@ const Login = () => {
                             <label className="block text-xs font-medium text-white mb-2">
                                 {isLogin ? "Login as:" : "Register as:"}
                             </label>
-                            <div className="flex gap-2">
+                            {/* Responsive button spacing */}
+                            <div className="flex gap-1.5 sm:gap-2">
                                 <label className="flex items-center flex-1 cursor-pointer">
                                     <input
                                         type="radio"
@@ -228,12 +234,12 @@ const Login = () => {
                                         onChange={handleChange}
                                         className="sr-only"
                                     />
-                                    <div className={`w-full p-2 rounded-lg border transition duration-300 ${formData.role === "student"
+                                    <div className={`w-full p-1.5 sm:p-2 rounded-lg border transition duration-300 text-xs sm:text-sm ${formData.role === "student"
                                             ? "bg-blue-500/20 border-blue-400 text-white"
                                             : "bg-white/5 border-white/10 text-white/70 hover:border-white/30"
                                         }`}>
                                         <div className="text-center">
-                                            <div className="font-medium text-sm">Student</div>
+                                            <div className="font-medium">Student</div>
                                         </div>
                                     </div>
                                 </label>
@@ -246,12 +252,12 @@ const Login = () => {
                                         onChange={handleChange}
                                         className="sr-only"
                                     />
-                                    <div className={`w-full p-2 rounded-lg border transition duration-300 ${formData.role === "admin"
+                                    <div className={`w-full p-1.5 sm:p-2 rounded-lg border transition duration-300 text-xs sm:text-sm ${formData.role === "admin"
                                             ? "bg-purple-500/20 border-purple-400 text-white"
                                             : "bg-white/5 border-white/10 text-white/70 hover:border-white/30"
                                         }`}>
                                         <div className="text-center">
-                                            <div className="font-medium text-sm">Admin</div>
+                                            <div className="font-medium">Admin</div>
                                         </div>
                                     </div>
                                 </label>
@@ -269,17 +275,17 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className={`w-full py-3 rounded-lg font-bold uppercase tracking-wider transition duration-300 transform focus:outline-none focus:ring-4 shadow-lg ${formData.role === "admin"
+                            className={`w-full py-2.5 sm:py-3 rounded-lg font-bold uppercase tracking-wider transition duration-300 transform focus:outline-none focus:ring-4 shadow-lg text-xs sm:text-sm ${formData.role === "admin"
                                     ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 focus:ring-purple-300/50 shadow-purple-500/25"
                                     : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-blue-300/50 shadow-blue-500/25"
-                                } text-white text-sm ${isLoading
+                                } text-white ${isLoading
                                     ? "opacity-70 cursor-not-allowed"
                                     : "hover:scale-[1.02] active:scale-[0.98]"
                                 }`}
                         >
                             {isLoading ? (
                                 <div className="flex items-center justify-center">
-                                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                    <svg className="animate-spin -ml-1 mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
@@ -295,7 +301,7 @@ const Login = () => {
                     </form>
 
                     {message && (
-                        <div className={`mt-4 p-3 rounded-lg text-center font-semibold backdrop-blur-md border text-sm ${message.toLowerCase().includes("successful") || message.toLowerCase().includes("please login")
+                        <div className={`mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-lg text-center font-semibold backdrop-blur-md border text-xs sm:text-sm ${message.toLowerCase().includes("successful") || message.toLowerCase().includes("please login")
                                 ? "bg-green-500/20 text-green-200 border-green-400/30"
                                 : "bg-red-500/20 text-red-200 border-red-400/30"
                             }`}>
@@ -303,7 +309,7 @@ const Login = () => {
                         </div>
                     )}
 
-                    <div className="text-center mt-4 pt-4 border-t border-white/10">
+                    <div className="text-center mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-white/10">
                         <p className="text-white/70 text-xs">
                             {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
                             <button
@@ -315,7 +321,7 @@ const Login = () => {
                         </p>
                     </div>
 
-                    <div className="mt-4 text-center">
+                    <div className="mt-3 sm:mt-4 text-center">
                         <p className="text-white/40 text-xs">
                             Secure Academic Portal • Computer Science Department
                         </p>

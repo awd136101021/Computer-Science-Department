@@ -58,7 +58,7 @@ const StopIcon = () => (
 
 const SpeakerIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-        <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.986 3.986 0 0013 10a3.986 3.986 0 00-1.172-2.828a1 1 0 010-1.414z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 011-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.986 3.986 0 0013 10a3.986 3.986 0 00-1.172-2.828a1 1 0 010-1.414z" clipRule="evenodd" />
     </svg>
 );
 
@@ -257,8 +257,8 @@ export default function Chatbot() {
     return (
         <div className="fixed bottom-5 right-5 z-50">
             {isOpen && (
-                <div className={`transition-all duration-500 ease-in-out opacity-100 translate-y-0 origin-bottom-right absolute bottom-20 right-0 w-80 md:w-96 bg-white rounded-xl shadow-2xl flex flex-col h-[65vh] border border-gray-100`}>
-
+                <div className={`transition-all duration-500 ease-in-out opacity-100 translate-y-0 origin-bottom-right absolute bottom-20 right-0 w-[90vw] max-w-sm sm:w-80 md:w-96 bg-white rounded-xl shadow-2xl flex flex-col h-[75vh] max-h-[600px] sm:h-[65vh] border border-gray-100`}> {/* responsive fix: adjusted width and height */}
+                    
                     {/* Header */}
                     <div className="flex flex-col p-0 border-b border-gray-200 shadow-sm">
                         <div className="flex justify-between items-center px-4 pt-4 pb-2">
@@ -278,7 +278,7 @@ export default function Chatbot() {
                                 >
                                     <RefreshIcon />
                                 </button>
-                                <span className="text-gray-300">|</span>
+                                <span className="text-gray-300 hidden sm:inline">|</span> {/* responsive fix: hide on mobile */}
                                 <button
                                     onClick={toggleChat}
                                     className="p-0.5 rounded transition-colors"
@@ -288,7 +288,7 @@ export default function Chatbot() {
                                 >
                                     <MinimizeIcon />
                                 </button>
-                                <span className="text-gray-300">|</span>
+                                <span className="text-gray-300 hidden sm:inline">|</span> {/* responsive fix: hide on mobile */}
                                 <button
                                     onClick={toggleChat}
                                     className="p-0.5 rounded transition-colors"
@@ -302,12 +302,12 @@ export default function Chatbot() {
                                 </button>
                             </div>
                         </div>
-                        <div className="flex flex-col items-start px-4 pb-3 text-xs text-gray-400">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 pb-3 text-xs text-gray-400"> {/* responsive fix: stacked on mobile */}
                             <span className="flex items-center space-x-1">
                                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1"></div>
                                 <span className="text-xs italic">We&apos;re online ...</span>
                             </span>
-                            <span className="text-gray-400 mt-1">October 15, 2024</span>
+                            <span className="text-gray-400 mt-1 sm:mt-0">October 15, 2024</span> {/* responsive fix: adjusted margin */}
                         </div>
                     </div>
 
@@ -319,19 +319,19 @@ export default function Chatbot() {
                                     key={index}
                                     className={`flex items-start gap-1 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
-                                    <div className={`max-w-[80%] p-3 text-sm shadow-md transition-all duration-300 ${msg.sender === 'user'
+                                    <div className={`max-w-[85%] sm:max-w-[80%] p-3 text-sm shadow-md transition-all duration-300 ${msg.sender === 'user' /* responsive fix: increased max-width on mobile */
                                         ? 'text-black rounded-xl rounded-br-sm'
                                         : 'bg-white text-gray-800 rounded-xl rounded-tl-sm border border-gray-100'
                                         }`}
                                         style={msg.sender === 'user' ? { backgroundColor: PRIMARY_COLOR_HEX } : {}}>
-                                        <p>{msg.text}</p>
+                                        <p className="break-words">{msg.text}</p> {/* responsive fix: added word break */}
                                     </div>
 
                                     {msg.sender === 'bot' && isSpeechSynthesisAvailable && (
                                         <button
                                             onClick={() => handleSpeak(msg.text, index)}
                                             aria-label={speakingIndex === index ? "Stop speaking" : "Read message aloud"}
-                                            className="w-6 h-6 flex-shrink-0 text-gray-400 disabled:text-gray-200 transition-colors mt-2"
+                                            className="w-6 h-6 flex-shrink-0 text-gray-400 disabled:text-gray-200 transition-colors mt-2 hidden sm:flex" /* responsive fix: hide on mobile */
                                             style={speakingIndex === index ? { color: PRIMARY_COLOR_HEX } : {}}
                                             onMouseEnter={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.color = PRIMARY_COLOR_HEX; }}
                                             onMouseLeave={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.color = speakingIndex === index ? PRIMARY_COLOR_HEX : ''; }}
@@ -354,14 +354,14 @@ export default function Chatbot() {
                     </div>
 
                     {/* Input Form */}
-                    <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-100 bg-white">
+                    <form onSubmit={handleSendMessage} className="p-3 sm:p-4 border-t border-gray-100 bg-white"> {/* responsive fix: adjusted padding */}
                         <div className="relative">
                             <input
                                 type="text"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 placeholder={isRecording ? "Listening..." : (isLoading ? "Please wait..." : "Enter message")}
-                                className="w-full pl-4 pr-24 py-3 border border-gray-300 rounded-full text-gray-800 focus:outline-none focus:ring-1 transition-shadow placeholder-gray-400"
+                                className="w-full pl-4 pr-20 sm:pr-24 py-2 sm:py-3 border border-gray-300 rounded-full text-gray-800 focus:outline-none focus:ring-1 transition-shadow placeholder-gray-400 text-sm sm:text-base" /* responsive fix: adjusted padding and text size */
                                 style={{ '--tw-ring-color': PRIMARY_COLOR_RING } as React.CSSProperties}
                                 disabled={isLoading || isRecording}
                             />
@@ -373,7 +373,7 @@ export default function Chatbot() {
                                         onClick={handleVoiceClick}
                                         disabled={isLoading}
                                         aria-label={isRecording ? "Stop Recording" : "Start Voice Input"}
-                                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors 
+                                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-colors /* responsive fix: adjusted button size */
                                             ${isRecording
                                                 ? 'text-red-500 animate-pulse'
                                                 : 'text-gray-500'
@@ -391,7 +391,7 @@ export default function Chatbot() {
                                     type="submit"
                                     disabled={isLoading || !inputValue.trim() || isRecording || inputValue === "Listening..."}
                                     aria-label="Send Message"
-                                    className="text-black w-10 h-10 rounded-full flex items-center justify-center disabled:bg-gray-300 disabled:text-gray-500 transition-colors shadow-lg"
+                                    className="text-black w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center disabled:bg-gray-300 disabled:text-gray-500 transition-colors shadow-lg" /* responsive fix: adjusted button size */
                                     style={{ backgroundColor: PRIMARY_COLOR_HEX }}
                                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = PRIMARY_COLOR_HOVER}
                                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = PRIMARY_COLOR_HEX}
@@ -408,7 +408,7 @@ export default function Chatbot() {
             <button
                 onClick={toggleChat}
                 aria-label={isOpen ? "Close Chatbot" : "Open Chatbot"}
-                className={`w-14 h-14 rounded-full shadow-xl transform transition-transform duration-300 ease-in-out focus:outline-none focus:ring-4 flex items-center justify-center border-2 bg-white`}
+                className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-xl transform transition-transform duration-300 ease-in-out focus:outline-none focus:ring-4 flex items-center justify-center border-2 bg-white`} /* responsive fix: adjusted button size */
                 style={{
                     borderColor: PRIMARY_COLOR_HEX,
                     color: PRIMARY_COLOR_HEX,

@@ -110,24 +110,26 @@ export default function Faculty() {
             className={`min-h-screen bg-gradient-to-br from-slate-50 pt-18 via-blue-50 to-indigo-100 transition-opacity duration-1000 ${isVisible ? "opacity-100" : "opacity-0"
                 }`}
         >
-            {/* Hero Section */}
-            <section className="text-center py-16 px-8">
-                <h1 className="text-4xl font-bold text-[#003366] mb-4 tracking-wide">
+            {/* Hero Section - responsiveness added */}
+            <section className="text-center py-8 md:py-12 lg:py-16 px-4 sm:px-6 lg:px-8">
+                {/* Responsive font sizes */}
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#003366] mb-3 sm:mb-4 tracking-wide">
                     Meet Our Distinguished Faculty
                 </h1>
-                <p className="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">
+                {/* Responsive padding and text size */}
+                <p className="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base lg:text-lg leading-relaxed px-2">
                     Our department prides itself on having a team of dedicated educators and researchers who
                     inspire students through knowledge, innovation, and mentorship.
                 </p>
             </section>
 
-            {/* Category Buttons */}
-            <section className="flex justify-center gap-4 flex-wrap mb-12">
+            {/* Category Buttons - responsiveness added */}
+            <section className="flex justify-center gap-2 sm:gap-3 lg:gap-4 flex-wrap mb-8 sm:mb-10 lg:mb-12 px-2 sm:px-4">
                 {categories.map((cat) => (
                     <button
                         key={cat.id}
                         onClick={() => setActiveCategory(cat.id)}
-                        className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 shadow-md ${activeCategory === cat.id
+                        className={`px-3 sm:px-4 lg:px-6 py-1.5 sm:py-2 rounded-full font-semibold transition-all duration-300 shadow-md text-xs sm:text-sm lg:text-base ${activeCategory === cat.id
                                 ? "bg-gradient-to-r from-[#004A99] to-[#0066CC] text-white scale-105 shadow-lg"
                                 : "bg-white text-[#003366] border border-[#004A99] hover:bg-[#E6F0FF]"
                             }`}
@@ -137,22 +139,22 @@ export default function Faculty() {
                 ))}
             </section>
 
-            {/* Faculty Grid */}
-            <section className="grid gap-10 px-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto mb-20">
+            {/* Faculty Grid - responsiveness added */}
+            <section className="grid gap-6 sm:gap-8 lg:gap-10 px-4 sm:px-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto mb-12 sm:mb-16 lg:mb-20">
                 {faculty
                     .filter((f) => activeCategory === "all" || f.category === activeCategory)
                     .map((f, i) => (
                         <div
                             key={i}
                             onClick={() => setSelectedFaculty(i)}
-                            className={`relative bg-white rounded-2xl shadow-lg border-2 transition-all duration-500 overflow-hidden group cursor-pointer ${selectedFaculty === i
+                            className={`relative bg-white rounded-xl sm:rounded-2xl shadow-lg border-2 transition-all duration-500 overflow-hidden group cursor-pointer ${selectedFaculty === i
                                     ? "border-yellow-400 shadow-yellow-400 shadow-xl scale-[1.03]"
-                                    : "border-gray-200 hover:shadow-2xl hover:-translate-y-2"
+                                    : "border-gray-200 hover:shadow-2xl hover:-translate-y-1 sm:hover:-translate-y-2"
                                 }`}
                         >
-                            {/* Circular Image */}
-                            <div className="relative flex justify-center mt-6">
-                                <div className="rounded-full overflow-hidden w-40 h-40 border-4 border-[#004A99] shadow-lg group-hover:shadow-[#004A99]/50 transition-all duration-500">
+                            {/* Circular Image - responsiveness added */}
+                            <div className="relative flex justify-center mt-4 sm:mt-6">
+                                <div className="rounded-full overflow-hidden w-28 h-28 sm:w-32 sm:h-32 lg:w-40 lg:h-40 border-4 border-[#004A99] shadow-lg group-hover:shadow-[#004A99]/50 transition-all duration-500">
                                     <img
                                         src={f.img}
                                         alt={f.name}
@@ -161,27 +163,28 @@ export default function Faculty() {
                                 </div>
                             </div>
 
-                            {/* Content */}
-                            <div className="p-6 text-center">
-                                <h3 className="text-2xl font-bold text-[#003366] group-hover:text-[#004A99] transition-colors duration-300 mb-1">
+                            {/* Content - responsiveness added */}
+                            <div className="p-4 sm:p-5 lg:p-6 text-center">
+                                {/* Responsive text sizes */}
+                                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#003366] group-hover:text-[#004A99] transition-colors duration-300 mb-1">
                                     {f.name}
                                 </h3>
-                                <p className="text-[#4B2483] font-semibold mb-1">{f.designation}</p>
-                                <p className="text-gray-700 text-sm mb-2">{f.specialization}</p>
-                                <p className="text-gray-500 text-sm italic mb-4">{f.education}</p>
-                                <p className="text-sm">
+                                <p className="text-[#4B2483] font-semibold text-sm sm:text-base mb-1">{f.designation}</p>
+                                <p className="text-gray-700 text-xs sm:text-sm mb-2">{f.specialization}</p>
+                                <p className="text-gray-500 text-xs sm:text-sm italic mb-3 sm:mb-4">{f.education}</p>
+                                <p className="text-xs sm:text-sm">
                                     <strong>Email:</strong> {f.email}
                                 </p>
-                                <p className="text-sm mb-3">
+                                <p className="text-xs sm:text-sm mb-2 sm:mb-3">
                                     <strong>Office:</strong> {f.office}
                                 </p>
 
                                 {/* Links */}
-                                <div className="flex justify-center gap-4 mt-4">
+                                <div className="flex justify-center gap-3 sm:gap-4 mt-3 sm:mt-4">
                                     {f.links.linkedin && (
                                         <a
                                             href={f.links.linkedin}
-                                            className="text-[#0077B5] hover:text-[#005582] text-2xl transition-all duration-300"
+                                            className="text-[#0077B5] hover:text-[#005582] text-xl sm:text-2xl transition-all duration-300"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
@@ -191,7 +194,7 @@ export default function Faculty() {
                                     {f.links.scholar && (
                                         <a
                                             href={f.links.scholar}
-                                            className="text-[#34A853] hover:text-[#2a853e] text-2xl transition-all duration-300"
+                                            className="text-[#34A853] hover:text-[#2a853e] text-xl sm:text-2xl transition-all duration-300"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
@@ -201,7 +204,7 @@ export default function Faculty() {
                                     {f.links.youtube && (
                                         <a
                                             href={f.links.youtube}
-                                            className="text-[#FF0000] hover:text-[#cc0000] text-2xl transition-all duration-300"
+                                            className="text-[#FF0000] hover:text-[#cc0000] text-xl sm:text-2xl transition-all duration-300"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
@@ -214,9 +217,10 @@ export default function Faculty() {
                     ))}
             </section>
 
-            {/* Stats Section */}
-            <section className="bg-white py-16 px-8 border-t border-gray-200 shadow-inner">
-                <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto text-center">
+            {/* Stats Section - responsiveness added */}
+            <section className="bg-white py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-200 shadow-inner">
+                {/* Responsive grid layout */}
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto text-center">
                     {[
                         { num: "20+", text: "Faculty Members" },
                         { num: "85%", text: "PhD Holders" },
@@ -225,10 +229,11 @@ export default function Faculty() {
                     ].map((stat, i) => (
                         <div
                             key={i}
-                            className="bg-gradient-to-br from-[#E6F0FF] to-[#F8FAFF] p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-500 border border-[#dbe3f0]"
+                            className="bg-gradient-to-br from-[#E6F0FF] to-[#F8FAFF] p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-500 border border-[#dbe3f0]"
                         >
-                            <h3 className="text-4xl font-extrabold text-[#004A99] mb-2">{stat.num}</h3>
-                            <p className="text-lg font-medium text-[#132A46]">{stat.text}</p>
+                            {/* Responsive text sizes */}
+                            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#004A99] mb-1 sm:mb-2">{stat.num}</h3>
+                            <p className="text-sm sm:text-base lg:text-lg font-medium text-[#132A46]">{stat.text}</p>
                         </div>
                     ))}
                 </div>
