@@ -1,27 +1,26 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
+interface Program {
+    level: string;
+    title: string;
+    duration: string;
+    desc: string;
+    courses: string[];
+    careers: string[];
+}
+
+interface Admission {
+    title: string;
+    desc: string;
+    reqs: string[];
+}
+
 export default function Programs() {
     const [filter, setFilter] = useState("all");
+    const [filteredPrograms, setFilteredPrograms] = useState<Program[]>([]);
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("opacity-100", "translate-y-0");
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { threshold: 0.1 }
-        );
-        document.querySelectorAll(".scroll-reveal").forEach((el) => {
-            observer.observe(el);
-        });
-    }, []);
-
-    const programs = [
+    const programs: Program[] = [
         {
             level: "undergraduate",
             title: "Bachelor of Science in Computer Science",
@@ -149,7 +148,7 @@ export default function Programs() {
         },
     ];
 
-    const admissions = [
+    const admissions: Admission[] = [
         {
             title: "Undergraduate Admissions",
             desc: "Open twice a year in Fall and Spring. Requires Intermediate (Pre-Engineering or ICS) with at least 60% marks.",
@@ -185,15 +184,45 @@ export default function Programs() {
         },
     ];
 
+    // Update filtered programs when filter changes
+    
+    // Initialize with all programs
+    useEffect(() => {
+        setFilteredPrograms(programs);
+    }, []);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("opacity-100", "translate-y-0");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.1 }
+        );
+        
+        document.querySelectorAll(".scroll-reveal").forEach((el) => {
+            observer.observe(el);
+        });
+
+        return () => observer.disconnect();
+    }, [filteredPrograms]); // Re-run when filteredPrograms changes
+
+    const handleFilterChange = (newFilter: string) => {
+        setFilter(newFilter);
+    };
+
     return (
         <main className="bg-[#ffffff] text-[#132A46] font-sans">
-
             {/* Intro */}
-            <section className="scroll-reveal opacity-0 translate-y-10 transition-all duration-1000 text-center py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto"> {/* responsive fix: added responsive padding */}
-                <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-[#004A99] mt-10"> {/* responsive fix: added responsive text size */}
+            <section className="scroll-reveal opacity-0 translate-y-10 transition-all duration-1000 text-center py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+                <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-[#004A99] mt-10">
                     Explore Our Programs
                 </h2>
-                <p className="text-base sm:text-lg leading-relaxed text-[#132A46] px-2 sm:px-0"> {/* responsive fix: added responsive text size and padding */}
+                <p className="text-base sm:text-lg leading-relaxed text-[#132A46] px-2 sm:px-0">
                     The Department of Computer Science offers a range of academic programs
                     designed to prepare students for successful careers in the evolving
                     field of computing. Our curriculum blends theoretical knowledge with
@@ -201,97 +230,76 @@ export default function Programs() {
                 </p>
             </section>
 
-            {/* Filter buttons - added for mobile accessibility */}
-            <div className="flex justify-center mb-10 px-4"> {/* responsive fix: added filter buttons for mobile */}
-                <div className="flex flex-wrap justify-center gap-2 max-w-md">
-                    <button
-                        onClick={() => setFilter("all")}
-                        className={`px-4 py-2 rounded-full text-sm font-semibold transition ${filter === "all" ? "bg-[#004A99] text-white" : "bg-gray-200 text-[#132A46]"}`}
-                    >
-                        All Programs
-                    </button>
-                    <button
-                        onClick={() => setFilter("undergraduate")}
-                        className={`px-4 py-2 rounded-full text-sm font-semibold transition ${filter === "undergraduate" ? "bg-[#004A99] text-white" : "bg-gray-200 text-[#132A46]"}`}
-                    >
-                        Undergraduate
-                    </button>
-                    <button
-                        onClick={() => setFilter("graduate")}
-                        className={`px-4 py-2 rounded-full text-sm font-semibold transition ${filter === "graduate" ? "bg-[#004A99] text-white" : "bg-gray-200 text-[#132A46]"}`}
-                    >
-                        Graduate
-                    </button>
-                    <button
-                        onClick={() => setFilter("doctorate")}
-                        className={`px-4 py-2 rounded-full text-sm font-semibold transition ${filter === "doctorate" ? "bg-[#004A99] text-white" : "bg-gray-200 text-[#132A46]"}`}
-                    >
-                        Doctorate
-                    </button>
-                </div>
-            </div>
+            
+
+           
 
             {/* Program Cards */}
-            <section className="scroll-reveal opacity-0 translate-y-10 transition-all duration-[1500ms] max-w-[1200px] mx-auto px-4 sm:px-6 grid gap-6 md:gap-8 lg:gap-10 grid-cols-1 md:grid-cols-2"> {/* responsive fix: adjusted grid and padding */}
-                {programs
-                    .filter((p) => filter === "all" || p.level === filter)
-                    .map((p, i) => (
-                        <div
-                            key={i}
-                            className="bg-white border-t-4 border-[#004A99] rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition duration-500" /* responsive fix: adjusted padding */
-                        >
-                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2"> {/* responsive fix: stacked title and duration on mobile */}
-                                <h3 className="text-xl sm:text-2xl font-extrabold text-[#004A99]"> {/* responsive fix: adjusted text size */}
-                                    {p.title}
-                                </h3>
-                                <span className="text-sm bg-[#FDCB5A] text-[#132A46] px-3 py-1 rounded-full font-semibold self-start sm:self-center"> {/* responsive fix: added self alignment */}
-                                    {p.duration}
-                                </span>
+            <section className="max-w-[1200px] mx-auto px-4 sm:px-6">
+               
+                    <div className="grid gap-6 md:gap-8 lg:gap-10 grid-cols-1 md:grid-cols-2">
+                        {filteredPrograms.map((p, i) => (
+                            <div
+                                key={i}
+                                className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 bg-white border-t-4 border-[#004A99] rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition duration-500"
+                                style={{ transitionDelay: `${i * 100}ms` }}
+                            >
+                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
+                                    <h3 className="text-xl sm:text-2xl font-extrabold text-[#004A99]">
+                                        {p.title}
+                                    </h3>
+                                    <span className="text-sm bg-[#FDCB5A] text-[#132A46] px-3 py-1 rounded-full font-semibold self-start sm:self-center">
+                                        {p.duration}
+                                    </span>
+                                </div>
+                                <p className="mb-4 text-[#132A46] text-sm sm:text-base">
+                                    {p.desc}
+                                </p>
+                                <h4 className="font-bold text-[#4B2483] mb-2 text-sm sm:text-base">
+                                    Key Courses:
+                                </h4>
+                                <ul className="list-disc pl-4 sm:pl-6 mb-4 text-[#132A46] space-y-1 text-sm sm:text-base">
+                                    {p.courses.map((c, i) => (
+                                        <li key={i}>{c}</li>
+                                    ))}
+                                </ul>
+                                <h4 className="font-bold text-[#4B2483] mb-2 text-sm sm:text-base">
+                                    Career Opportunities:
+                                </h4>
+                                <ul className="list-disc pl-4 sm:pl-6 text-[#132A46] space-y-1 text-sm sm:text-base">
+                                    {p.careers.map((c, i) => (
+                                        <li key={i}>{c}</li>
+                                    ))}
+                                </ul>
                             </div>
-                            <p className="mb-4 text-[#132A46] text-sm sm:text-base"> {/* responsive fix: adjusted text size */}
-                                {p.desc}
-                            </p>
-                            <h4 className="font-bold text-[#4B2483] mb-2 text-sm sm:text-base"> {/* responsive fix: adjusted text size */}
-                                Key Courses:
-                            </h4>
-                            <ul className="list-disc pl-4 sm:pl-6 mb-4 text-[#132A46] space-y-1 text-sm sm:text-base"> {/* responsive fix: adjusted padding and text size */}
-                                {p.courses.map((c, i) => (
-                                    <li key={i}>{c}</li>
-                                ))}
-                            </ul>
-                            <h4 className="font-bold text-[#4B2483] mb-2 text-sm sm:text-base"> {/* responsive fix: adjusted text size */}
-                                Career Opportunities:
-                            </h4>
-                            <ul className="list-disc pl-4 sm:pl-6 text-[#132A46] space-y-1 text-sm sm:text-base"> {/* responsive fix: adjusted padding and text size */}
-                                {p.careers.map((c, i) => (
-                                    <li key={i}>{c}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                
+                
+                
             </section>
 
             {/* Admission Info */}
-            <section className="scroll-reveal opacity-0 translate-y-10 transition-all duration-[2000ms] bg-[#F0F4F8] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16 lg:mt-20"> {/* responsive fix: adjusted padding and margins */}
-                <h2 className="text-3xl sm:text-4xl font-black text-center text-[#004A99] mb-8 sm:mb-10"> {/* responsive fix: adjusted text size and margin */}
+            <section className="scroll-reveal opacity-0 translate-y-10 transition-all duration-[2000ms] bg-[#F0F4F8] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16 lg:mt-20">
+                <h2 className="text-3xl sm:text-4xl font-black text-center text-[#004A99] mb-8 sm:mb-10">
                     Admission Information
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-[1200px] mx-auto"> {/* responsive fix: adjusted grid columns and gaps */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-[1200px] mx-auto">
                     {admissions.map((a, i) => (
                         <div
                             key={i}
-                            className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border-t-4 border-[#FDCB5A] hover:shadow-2xl hover:-translate-y-1 transition duration-500" /* responsive fix: adjusted padding */
+                            className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border-t-4 border-[#FDCB5A] hover:shadow-2xl hover:-translate-y-1 transition duration-500"
                         >
-                            <h3 className="text-xl sm:text-2xl font-bold text-[#004A99] mb-3"> {/* responsive fix: adjusted text size */}
+                            <h3 className="text-xl sm:text-2xl font-bold text-[#004A99] mb-3">
                                 {a.title}
                             </h3>
-                            <p className="mb-3 text-[#132A46] text-sm sm:text-base"> {/* responsive fix: adjusted text size */}
+                            <p className="mb-3 text-[#132A46] text-sm sm:text-base">
                                 {a.desc}
                             </p>
-                            <h4 className="font-semibold text-[#4B2483] mb-2 text-sm sm:text-base"> {/* responsive fix: adjusted text size */}
+                            <h4 className="font-semibold text-[#4B2483] mb-2 text-sm sm:text-base">
                                 Requirements:
                             </h4>
-                            <ul className="list-disc pl-4 sm:pl-6 text-[#132A46] space-y-1 text-sm sm:text-base"> {/* responsive fix: adjusted padding and text size */}
+                            <ul className="list-disc pl-4 sm:pl-6 text-[#132A46] space-y-1 text-sm sm:text-base">
                                 {a.reqs.map((r, i) => (
                                     <li key={i}>{r}</li>
                                 ))}
@@ -302,7 +310,7 @@ export default function Programs() {
                                 rel="noopener noreferrer"
                                 className="inline-block"
                             >
-                                <button className="mt-6 bg-[#FDCB5A] text-[#132A46] px-5 py-2 sm:px-6 sm:py-2 rounded-full font-bold hover:bg-[#D97706] transition text-sm sm:text-base"> {/* responsive fix: adjusted padding and text size */}
+                                <button className="mt-6 bg-[#FDCB5A] text-[#132A46] px-5 py-2 sm:px-6 sm:py-2 rounded-full font-bold hover:bg-[#D97706] transition text-sm sm:text-base">
                                     Apply Now
                                 </button>
                             </a>
