@@ -132,8 +132,11 @@ export default function Header() {
       </div>
 
       {/* 🔹 Mobile Menu Overlay - Responsive fix: added mobile menu */}
-      <div className={`lg:hidden fixed inset-0 bg-gradient-to-r from-[#00224e] via-[#003366] to-[#004080] transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} style={{ top: '60px', zIndex: 49 }}>
-        <nav className="flex flex-col items-center justify-center h-full space-y-8 px-6">
+      <div className={`lg:hidden fixed inset-0 transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} style={{ top: '60px', zIndex: 49 }}>
+        {/* Fixed: Added semi-transparent background overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#001a3d] via-[#00224e] to-[#003366] opacity-95 backdrop-blur-sm"></div>
+        
+        <nav className="relative flex flex-col items-center justify-center h-full space-y-6 px-6 py-10">
           {[
             { to: "/", label: "Home" },
             { to: "/aboutus", label: "About Us" },
@@ -146,10 +149,10 @@ export default function Header() {
             <Link
               key={to}
               href={to}
-              className={`text-xl font-medium tracking-wide transition-all duration-300 ${
+              className={`text-xl font-semibold tracking-wide transition-all duration-300 px-4 py-3 rounded-lg w-full max-w-xs text-center ${
                 isActive(to)
-                  ? "text-[#ffcc00] font-semibold"
-                  : "text-white hover:text-[#ffcc00]"
+                  ? "text-[#ffcc00] bg-white/10 shadow-lg"
+                  : "text-white hover:text-[#ffcc00] hover:bg-white/5"
               }`}
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -161,7 +164,7 @@ export default function Header() {
           {user ? (
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 bg-gradient-to-r from-[#ff6b6b] to-[#ff8e8e] text-white font-bold px-6 py-3 rounded-full hover:from-white hover:to-white hover:text-red-600 hover:shadow-[0_0_15px_#ff6b6b] transition-all duration-300 text-lg mt-8"
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#ff6b6b] to-[#ff8e8e] text-white font-bold px-6 py-3 rounded-full hover:from-white hover:to-white hover:text-red-600 hover:shadow-[0_0_15px_#ff6b6b] transition-all duration-300 text-lg mt-6 w-full max-w-xs"
             >
               <FaSignInAlt className="text-base rotate-180" />
               <span>Logout</span>
@@ -169,7 +172,7 @@ export default function Header() {
           ) : (
             <Link
               href="/login"
-              className="flex items-center gap-2 bg-gradient-to-r from-[#ffcc00] to-[#ffd633] text-[#003366] font-bold px-6 py-3 rounded-full hover:from-white hover:to-white hover:text-[#003366] hover:shadow-[0_0_15px_#ffcc00] transition-all duration-300 text-lg mt-8"
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#ffcc00] to-[#ffd633] text-[#003366] font-bold px-6 py-3 rounded-full hover:from-white hover:to-white hover:text-[#003366] hover:shadow-[0_0_15px_#ffcc00] transition-all duration-300 text-lg mt-6 w-full max-w-xs"
               onClick={() => setMobileMenuOpen(false)}
             >
               <FaSignInAlt className="text-base" />
